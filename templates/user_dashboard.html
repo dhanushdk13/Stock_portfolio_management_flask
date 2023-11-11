@@ -1,0 +1,48 @@
+<!-- user_dashboard.html -->
+{% extends 'base.html' %}
+{% block title %}User Dashboard{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Content -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Stocks</h1>
+            </div>
+            <!-- Display Stocks Table -->
+            <form id="buy-stocks-form" action="/user" method="POST">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Symbol</th>
+                            <th scope="col">Open Price</th>
+                            <th scope="col">Close Price</th>
+                            <th scope="col">Action</th>
+                            <th scope="col">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stock in stocks %}
+                            <tr>
+                                <td>{{ stock[0] }}</td>
+                                <td>{{ stock[6] }}</td> 
+                                <td>{{ stock[1] }}</td> 
+                                <td>
+                                    <input type="radio" name="transaction[{{ stock[0] }}]" value="buy:{{ stock[0] }}"> Buy
+                                    <input type="radio" name="transaction[{{ stock[0] }}]" value="sell:{{ stock[0] }}"> Sell
+                                </td>
+                                <td>
+                                    <input type="number" name="quantities[{{ stock[0] }}]" value="0" min="0">
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button type="submit">Buy Selected Stocks</button>
+            </form>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+
