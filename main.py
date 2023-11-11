@@ -75,13 +75,13 @@ def user_dashboard():
                 quantity = request.form.get(f"quantities[{stock_symbol}]")
             except KeyError:
                     continue
-            if quantity==0:
-                continue
             if transaction_type == f"buy:{stock_symbol}":
-                buy_requests[stock_symbol]=quantity
+                if quantity != "0":
+                    buy_requests[stock_symbol]=quantity
                 
             elif transaction_type == f"sell:{stock_symbol}":
-                sell_requests[stock_symbol]=quantity
+                if quantity != "0":
+                    sell_requests[stock_symbol]=quantity
         
         # Process buy and sell requests
         for symbol, quantity in buy_requests.items():
