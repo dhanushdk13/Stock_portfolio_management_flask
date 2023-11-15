@@ -1,24 +1,92 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard</title>
-</head>
-<body>
+{% extends 'base_admin.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
     <h1>Welcome to the Admin Dashboard</h1>
     <h2>User Management</h2>
+    <form action="/admin/remove_users" method="post"> 
     <table border="1">
         <tr>
+            <th>Select</th>
             <th>Username</th>
             <th>Email</th>
             <th>User Type</th>
         </tr>
         {% for user in users %}
         <tr>
+            <td><input type="checkbox" name="remove_user[]" value="{{ user[0] }}"></td>
             <td>{{ user[1] }}</td>
             <td>{{ user[3] }}</td>
             <td>{{ user[4] }}</td>
         </tr>
         {% endfor %}
     </table>
-</body>
-</html>
+    <button type="submit">Remove Selected Users</button>
+    </form>
+</br>
+</br>
+    <h2>Stock Management</h2>
+    <form action="/admin" method="post">
+        <label for="stock_symbol">Select Stock:</label>
+        <select name="stock_symbol" id="stock_symbol">
+            {% for stock in stocks %}
+                <option value="{{ stock[0] }}">{{ stock[0] }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="new_price">Enter New Stock Price:</label>
+        <input type="text" name="new_price" id="new_price" required>
+        <br>
+        <button type="submit">Update Stock Prices</button>
+    </form>
+</br>
+    <div style="display: inline-block;">
+        <label for="update_quantity">Update Quantity:</label>
+        <input type="text" name="quantity_multiplier" id="quantity_multiplier" required>
+        <button type="submit" id="update_quantity_btn">Update Quantity</button>
+    </div>
+
+    <h2>Premium Requests</h2>
+    <table border="1">
+        <tr>
+            <th>User ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+        {% for request in premium_requests %}
+            <tr>
+                <td>{{ request[0] }}</td>
+                <td>{{ request[1] }}</td>
+                <td>{{ request[3] }}</td>
+                <td>
+                    <form action="/process_premium_request/{{ request[0] }}" method="post">
+                        <select name="action">
+                            <option value="approve">Approve</option>
+                            <option value="reject">Reject</option>
+                        </select>
+                        <button type="submit">Submit</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        // Add this script to handle the separate POST request for quantity update
+        document.getElementById('update_quantity_btn').addEventListener('click', function () {
+            var multiplier = document.getElementById('quantity_multiplier').value;
+    
+            // Perform a separate POST request to handle quantity update
+            $.ajax({
+                type: 'POST',
+                url: '/admin/update_quantity',
+                data: { quantity_multiplier: multiplier },
+                success: function (response) {
+                    console.log(response);
+                    // You can handle the response as needed (e.g., display a message)
+                }
+            });
+        });
+    </script>
+{% endblock %}

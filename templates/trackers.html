@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Trackers - Stock Management{% endblock %}
+
+{% block content %}
+    <h1>Select Symbol and Tracker</h1>
+    <form method="POST" action="/trackers">
+        <label for="selected_symbol">Select Symbol:</label>
+        <select id="selected_symbol" name="selected_symbol">
+            {% for symbol in symbols %}
+            <option value="{{ symbol[0] }}">{{ symbol[0] }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <label for="selected_tracker">Select Tracker:</label>
+        <select id="selected_tracker" name="selected_tracker">
+            <option value="RSI">RSI</option>
+            <option value="MACD">MACD</option>
+            <option value="ADX">ADX</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Get Tracker Value">
+    </form>
+{% endblock %}
+
+<!-- 
+<label for="selected_symbol">Select Symbol:</label>
+        <select id="selected_symbol" name="selected_symbol">
+            {% for symbol in symbols %}
+            <option value="{{ symbol[0] }}">{{ symbol[0] }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <label for="selected_tracker">Select Tracker:</label>
+        <select id="selected_tracker" name="selected_tracker">
+            <option value="RSI">RSI</option>
+            <option value="MACD">MACD</option>
+            <option value="ADX">ADX</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Get Tracker Value"> -->

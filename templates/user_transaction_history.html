@@ -1,0 +1,43 @@
+{% extends 'base_admin.html' %}
+{% block title %}User Transaction History{% endblock %}
+
+{% block content %}
+    <h1>User Transaction History</h1>
+    
+    <!-- Dropdown for User Selection -->
+    <form action="/user_transaction_history" method="post">
+        <label for="username">Select User:</label>
+        <select name="username" id="username">
+            {% for user in users %}
+                <option value="{{ user[1] }}">{{ user[1] }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">View Transaction History</button>
+    </form>
+
+    <!-- Display User Transaction History -->
+    {% if user_transaction_history %}
+        <h2>Transaction History for {{ selected_username }}</h2>
+        <table border="1">
+            <tr>
+                <th>Stock Symbol</th>
+                <th>Transaction Type</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Transaction Date</th>
+                <th>Username</th>
+            </tr>
+            {% for transaction in user_transaction_history %}
+                <tr>
+                    <td>{{ transaction[0] }}</td>
+                    <td>{{ transaction[1] }}</td>
+                    <td>{{ transaction[2] }}</td>
+                    <td>{{ transaction[3] }}</td>
+                    <td>{{ transaction[4] }}</td>
+                    <td>{{ transaction[5] }}</td>
+                    <!--<td>{{ transaction[6] }}</td>-->
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}

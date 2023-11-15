@@ -111,15 +111,16 @@
     <h5>Navigation</h5>
     <ul class="nav flex-column">
         <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="/user">User Dashboard</a></li>
+        <!--<li class="nav-item"><a class="nav-link" href="/user">User Dashboard</a></li>-->
         <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
-        <li class="nav-item"><a class="nav-link" href="/transaction-history">Transaction History</a></li>
+        <li class="nav-item"><a class="nav-link" href="/User-transactions">User-Transactions</a></li>
+        <li class="nav-item"><a class="nav-link" href="/user_transaction_history">User-Transaction-History</a></li>
         <li class="nav-item"><a class="nav-link" href="/historical_chart">Historical Chart</a></li>
         <!-- Add the Trackers link for premium users -->
         {% if session.get('usertype') == 'premium' %}
             <li class="nav-item"><a class="nav-link" href="/trackers">Trackers</a></li>
         {% endif %}
-
+        <li class="nav-item"><a class="nav-link" href="/delete_stocks">Delete Stocks</a></li>
         {% if session.usertype == "admin" %}
              <li class="nav-item"><a class="nav-link" href="/admin">Admin Dashboard</a></li>
         {% endif %}

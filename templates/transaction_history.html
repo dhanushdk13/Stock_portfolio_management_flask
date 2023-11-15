@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Transaction History{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Transaction History</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Stock Symbol</th>
+                <th>Transaction Type</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Transaction Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transaction_history_data %}
+            <tr>
+                <td>{{ transaction[2] }}</td>
+                <td>{{ transaction[3] }}</td>
+                <td>{{ transaction[4] }}</td>
+                <td>{{ transaction[5] }}</td>
+                <td>{{ transaction[6] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

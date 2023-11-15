@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Delete Stocks{% endblock %}
+
+{% block content %}
+    <h1>Delete Stocks</h1>
+    
+    <!-- Form for deleting stocks -->
+    <form method="post" action="{{ url_for('delete_stocks') }}">
+        <table border="1">
+            <thead>
+            <tr>
+                <th>Select</th>
+                <th>Stock Symbol</th>
+                <!-- ... (your existing table headers) ... -->
+            </tr>
+            </thead>
+            <tbody>
+            {% for stock in stocks %}
+                <tr>
+                    <td><input type="checkbox" name="delete_stock[]" value="{{ stock[0] }}"></td>
+                    <td>{{ stock[0] }}</td> <!-- Display the stock symbol -->
+                    <!-- ... (your existing table data) ... -->
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Delete Selected Stocks</button>
+    </form>
+{% endblock %}

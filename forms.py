@@ -28,7 +28,7 @@ def buy_stocks(db, cursor, user_id, stock_symbol, quantity):
             cursor.execute("SELECT * FROM Profile WHERE UserID = %s AND StockSymbol = %s", (user_id, stock_symbol))
             existing_profile = cursor.fetchone()
 
-            if existing_profile:
+            '''if existing_profile:
                 # User has an existing profile for this stock, increase quantity
                 existing_quantity = existing_profile[3]
                 new_quantity = existing_quantity + int(quantity)
@@ -37,7 +37,7 @@ def buy_stocks(db, cursor, user_id, stock_symbol, quantity):
             else:
                 # User doesn't have a profile for this stock, insert a new entry
                 cursor.execute("INSERT INTO Profile (UserID, StockSymbol, Quantity, PurchaseDate) VALUES (%s, %s, %s, %s)",
-                               (user_id, stock_symbol, quantity, datetime.now()))
+                               (user_id, stock_symbol, quantity, datetime.now()))'''
             
             cursor.execute("UPDATE Users SET Balance = %s WHERE UserID = %s", (new_balance, user_id))
             db.commit()
@@ -85,8 +85,8 @@ def sell_stocks(db, cursor, user_id, stock_symbol, quantity):
 
                 # Update profile by decreasing quantity
                 new_quantity = existing_quantity - int(quantity)
-                cursor.execute("UPDATE Profile SET Quantity = %s WHERE UserID = %s AND StockSymbol = %s",
-                               (new_quantity, user_id, stock_symbol))
+                #cursor.execute("UPDATE Profile SET Quantity = %s WHERE UserID = %s AND StockSymbol = %s",
+                 #              (new_quantity, user_id, stock_symbol))
                 
                 cursor.execute("UPDATE Users SET Balance = %s WHERE UserID = %s", (new_balance, user_id))
                 db.commit()
@@ -101,4 +101,45 @@ def sell_stocks(db, cursor, user_id, stock_symbol, quantity):
             flash('No matching stock found in your profile.', 'error')
     else:
         flash('Stock not found.', 'error')
+    
 
+def update_stock_price(db, cursor, stock_symbol, new_price):
+    try:
+        # Update the stock price in the Stocks table
+        cursor.execute("UPDATE Stocks SET ClosePrice = %s WHERE Symbol = %s", (new_price, stock_symbol))
+        db.commit()
+        flash(f'Stock price for {stock_symbol} updated successfully.', 'success')
+    except Exception as e:
+        db.rollback()
+        flash(f'Error updating stock price for {stock_symbol}: {str(e)}', 'error')
+    
+        
+def get_transaction_history(db,cursor,user_id):
+    cursor.execute("SELECT * FROM Transactions WHERE UserID = %s", (user_id,))
+    transaction_history_data = cursor.fetchall()
+    return transaction_history_data
+
+def get_profile_data(db,cursor,user_id):
+    cursor.execute("SELECT StockSymbol, Quantity, PurchaseDate FROM Profile WHERE UserID = %s", (user_id,))
+    profile_data = cursor.fetchall()
+    return profile_data
+
+
+def update_quantity_proc(db, cursor, multiplier):
+    try:
+        # Execute the stored procedure
+        cursor.callproc('update_quantity_proc', [multiplier])
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f"Error updating quantity: {str(e)}")
+
+def remove_user(db, cursor, user_id):
+    try:
+        # Perform the deletion
+        cursor.execute("DELETE FROM Users WHERE UserID = %s", (user_id,))
+        db.commit()
+    except Exception as e:
+        # Handle any errors, for example, log the error
+        print(f"Error removing user: {e}")
+        db.rollback()

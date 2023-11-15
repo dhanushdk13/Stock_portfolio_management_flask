@@ -1,0 +1,149 @@
+<!-- historical_chart.html -->
+
+{% extends 'base.html' %}
+{% block title %}Historical Chart{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Content -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Historical Chart</h1>
+            </div>
+            <!-- Select Stock and Time Period -->
+            <form>
+                <div class="form-group">
+                    <label for="stockSymbol">Select Stock Symbol:</label>
+                    <select id="stockSymbol" class="form-control">
+                        {% for stock in stocks %}
+                            <option value="{{ stock[0] }}">{{ stock[0] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="timePeriod">Select Time Period:</label>
+                    <select id="timePeriod" class="form-control">
+                        <option value="1day">1 Day</option>
+                        <option value="1month">1 Month</option>
+                        <option value="1year">1 Year</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="showHistoricalData()">Show Chart</button>
+            </form>
+
+            <!-- Display Chart -->
+            <div>
+                <!-- Use a unique ID for the canvas element -->
+                <canvas id="historicalChart" width="800" height="400"></canvas>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Declare chart variable globally
+    var historicalChart;
+
+    function showHistoricalData() {
+        var selectedStock = document.getElementById('stockSymbol').value;
+        var selectedTimePeriod = document.getElementById('timePeriod').value;
+
+        // Make an AJAX request to the server to fetch historical data
+        fetch('/fetch_historical_data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `selected_stock=${selectedStock}&selected_time_period=${selectedTimePeriod}`,
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Clear existing chart before displaying the new one
+            if (historicalChart) {
+                historicalChart.destroy();
+            }
+
+            // Use Chart.js to display the historical data in a chart
+            historicalChart = displayChart(data, selectedTimePeriod);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function displayChart(data, selectedTimePeriod) {
+        // Implement the logic to create and display the chart using Chart.js
+        var ctx = document.getElementById('historicalChart').getContext('2d');
+        var chart;
+
+        // For 1-day period, use a line chart to display hourly close prices
+        if (selectedTimePeriod === '1day') {
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        label: 'Hourly Closing Prices',
+                        data: Object.values(data).map(entry => entry.Close),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: [{
+                            type: 'time',
+                            time: {
+                                unit: 'hour',
+                                displayFormats: {
+                                    hour: 'MMM D, hA' // Format for hourly labels
+                                }
+                            }
+                        }],
+                        y: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        } else {
+            // For other time periods, use a standard line chart
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        label: 'Closing Prices',
+                        data: Object.values(data).map(entry => entry.Close),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: [{
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        }],
+                        y: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        return chart; // Return the chart instance
+    }
+</script>
+
+{% endblock %}

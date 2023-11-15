@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Tracker Result - Stock Management{% endblock %}
+
+{% block content %}
+    <h1>Tracker Value</h1>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% else %}
+        <p>Symbol: {{ symbol }}</p>
+        <p>Tracker: {{ tracker }}</p>
+        <p>Value: {{ value }}</p>
+    {% endif %}
+{% endblock %}

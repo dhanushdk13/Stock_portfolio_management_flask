@@ -43,6 +43,52 @@
         </main>
     </div>
 </div>
+
+<script>
+    function refreshStockData() {
+        $.ajax({
+            type: 'GET',
+            url: '/user',
+            dataType: 'json',
+            success: function(data) {
+                console.log('Received data:', data);
+
+                // Get the table body element
+                const stocksTable = document.querySelector('table tbody');
+    
+                // Clear existing rows
+                stocksTable.innerHTML = '';
+    
+                // Loop through the data and append rows to the table
+                for (const stock of data.stocks) {
+                    const row = stocksTable.insertRow();
+    
+                    // Create cells for each data point
+                    const symbolCell = row.insertCell(0);
+                    const openPriceCell = row.insertCell(1);
+                    const closePriceCell = row.insertCell(2);
+                    const transactionCell = row.insertCell(3);
+                    const quantityCell = row.insertCell(4);
+    
+                    // Set the cell content
+                    symbolCell.innerText = stock.Symbol;
+                    openPriceCell.innerText = stock.OpenPrice;
+                    closePriceCell.innerText = stock.ClosePrice;
+                    transactionCell.innerHTML = `
+                        <input type="radio" name="transaction[${stock.Symbol}]" value="buy:${stock.Symbol}"> Buy
+                        <input type="radio" name="transaction[${stock.Symbol}]" value="sell:${stock.Symbol}"> Sell
+                    `;
+                    quantityCell.innerHTML = `
+                        <input type="number" name="quantities[${stock.Symbol}]" value="0" min="0">
+                    `;
+                }
+            }
+        });
+    }
+    
+    setInterval(refreshStockData, 30000);
+    </script>
+
 {% endblock %}
 
 

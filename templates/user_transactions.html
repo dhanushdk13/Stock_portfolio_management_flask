@@ -1,0 +1,21 @@
+{% extends 'base_admin.html' %}
+{% block title %}User Transactions{% endblock %}
+
+{% block content %}
+    <h1>User Transaction Counts</h1>
+    <table border="1">
+        <tr>
+            <th>User ID</th>
+            <th>Transaction Count</th>
+        </tr>
+        {% for user_count in user_transaction_counts %}
+            <tr>
+                <td>{{ user_count[0] }}</td>
+                <td>{{ user_count[1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <hr>
+
+{% endblock %}
