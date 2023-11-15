@@ -1,6 +1,12 @@
 <!-- historical_chart.html -->
+{% if session.usertype == "admin" %}
+    {% extends 'base_admin.html' %}
+{% endif %}
 
-{% extends 'base.html' %}
+{% if session.usertype == "normal" or session.usertype == "premium" %}
+    {% extends 'base.html' %}
+{% endif %}
+
 {% block title %}Historical Chart{% endblock %}
 {% block content %}
 <div class="container-fluid">
